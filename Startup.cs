@@ -63,7 +63,7 @@ namespace library
       // In production, the React files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
       {
-        configuration.RootPath = "clientapp/build";
+        configuration.RootPath = "ClientApp/build";
       });
 
       services.AddDbContext<ApplicationContext>(optionBuilder =>
@@ -106,7 +106,7 @@ namespace library
 
       app.UseSpa(spa =>
       {
-        spa.Options.SourcePath = "clientapp";
+        spa.Options.SourcePath = "ClientApp";
 
         if (env.IsDevelopment())
         {
