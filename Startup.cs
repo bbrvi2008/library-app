@@ -1,3 +1,4 @@
+using System.IO;
 using library.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -106,7 +107,7 @@ namespace library
 
       app.UseSpa(spa =>
       {
-        spa.Options.SourcePath = "ClientApp";
+        spa.Options.SourcePath = Path.Join(env.ContentRootPath, "ClientApp");
 
         if (env.IsDevelopment())
         {
