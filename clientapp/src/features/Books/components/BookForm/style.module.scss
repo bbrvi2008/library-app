@@ -1,0 +1,12 @@
+.bookForm {
+
+  &__buttons {
+    text-align: right;
+  }
+
+  &__button {
+    & + & {
+      margin-left: 8px;
+    }
+  }
+}

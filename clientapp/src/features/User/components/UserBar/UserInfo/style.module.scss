@@ -1,0 +1,15 @@
+.userInfo {
+
+  &__menu {
+    min-width: 160px;
+  }
+
+  &__menuItem {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logoutIcon {
+    margin-left: auto;
+  }
+}

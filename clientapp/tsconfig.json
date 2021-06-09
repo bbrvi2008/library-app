@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "lib": [
+      "es6",
+      "esnext",
+      "DOM"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "checkJs": true,
+    "jsx": "react-jsx",
+    "outDir": "build",
+    "noEmit": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "types": [
+      "jest"
+    ],
+    "typeRoots": [
+      "./src/typings",
+      "./node_modules/@types"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "src/**/*",
+    "tsconfig.json"
+  ],
+  "exclude": [
+    "build",
+    "node_modules"
+  ]
+}

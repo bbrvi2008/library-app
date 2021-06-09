@@ -1,0 +1,24 @@
+.pageLayout {
+  max-width: 1200px;
+  background-color: white;
+  margin: 0 auto;
+
+  &__title {
+
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+
+    & > * {
+      & + & {
+        margin-left: 8px;
+      }
+    }
+  }
+
+  &__content {
+    margin-top: 8px;
+  }
+}
