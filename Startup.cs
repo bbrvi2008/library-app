@@ -1,9 +1,10 @@
 using System.IO;
+using System.Net;
 using library.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,10 @@ namespace library
       //       .WithOrigins(new[] { "http://localhost:3000" })
       //       .AllowAnyMethod()
       //       .AllowAnyHeader());
+      // });
+      // services.Configure<ForwardedHeadersOptions>(options =>
+      // {
+      //   options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
       // });
 
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -94,6 +99,10 @@ namespace library
       app.UseRouting();
 
       // app.UseCors("CorsPolicy");
+      app.UseForwardedHeaders(new ForwardedHeadersOptions
+      {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+      });
 
       app.UseAuthentication();
       app.UseAuthorization();
