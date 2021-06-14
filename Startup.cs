@@ -16,28 +16,29 @@ namespace library
 {
   public class Startup
   {
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
       Configuration = configuration;
+      CurrentEnvironment = env;
     }
 
     public IConfiguration Configuration { get; }
+    private IWebHostEnvironment CurrentEnvironment { get; set; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      // services.AddCors(options =>
-      // {
-      //   options.AddPolicy("CorsPolicy",
-      //     builder => builder
-      //       .WithOrigins(new[] { "http://localhost:3000" })
-      //       .AllowAnyMethod()
-      //       .AllowAnyHeader());
-      // });
-      // services.Configure<ForwardedHeadersOptions>(options =>
-      // {
-      //   options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
-      // });
+      if (CurrentEnvironment.IsDevelopment())
+      {
+        services.AddCors(options =>
+              {
+                options.AddPolicy("CorsPolicy",
+                  builder => builder
+                    .WithOrigins(new[] { "http://localhost:3000" })
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+              });
+      }
 
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -45,28 +46,18 @@ namespace library
           options.RequireHttpsMetadata = false;
           options.TokenValidationParameters = new TokenValidationParameters
           {
-            // укзывает, будет ли валидироваться издатель при валидации токена
             ValidateIssuer = true,
-            // строка, представляющая издателя
             ValidIssuer = AuthOptions.ISSUER,
-
-            // будет ли валидироваться потребитель токена
             ValidateAudience = true,
-            // установка потребителя токена
             ValidAudience = AuthOptions.AUDIENCE,
-            // будет ли валидироваться время существования
             ValidateLifetime = true,
-
-            // установка ключа безопасности
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-            // валидация ключа безопасности
             ValidateIssuerSigningKey = true,
           };
         });
 
       services.AddControllersWithViews();
 
-      // In production, the React files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
       {
         configuration.RootPath = "ClientApp/build";
@@ -98,7 +89,9 @@ namespace library
 
       app.UseRouting();
 
-      // app.UseCors("CorsPolicy");
+      if(env.IsDevelopment()) {
+        app.UseCors("CorsPolicy");
+      }
       app.UseForwardedHeaders(new ForwardedHeadersOptions
       {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
