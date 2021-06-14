@@ -10,6 +10,10 @@
   }
 
   &__content {
-    padding: 0 32px;
+    padding: 0 12px;
+
+    @media screen and (min-width: 576px) {
+      padding: 0 32px;
+    }
   }
 }

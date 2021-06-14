@@ -48,6 +48,7 @@ const BookActions: React.FC<IBookActionsProps> = ({
           onClick={handleDeleteClick} 
           icon={<DeleteFilled />} 
           loading={isDeleting && loading.deleteBook}
+          danger
         >
           {!compact && 'Удалить'}
         </Button>

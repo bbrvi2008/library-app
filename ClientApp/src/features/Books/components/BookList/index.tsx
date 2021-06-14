@@ -1,9 +1,11 @@
 import React from 'react'
-import { Table, TableColumnsType } from 'antd'
+import { Table } from 'antd'
+import { SizeType } from 'antd/lib/config-provider/SizeContext'
+import useViewport from 'hooks/useViewport';
+import { Brackpoints } from 'utils/constants';
 
 import { BookDto } from '../../BooksService'
 import { getColumnSettings, getColumnWithActionsSettings } from './columnSettings';
-import BookActions from '../../components/BookActions'
 
 interface IBookListProps {
   books: BookDto[]
@@ -16,12 +18,20 @@ const BookList: React.FunctionComponent<IBookListProps> = ({
   loading,
   editable = false,
 }) => {
+  const { width = 0 } = useViewport()
+
+  const size = width < Brackpoints.SM
+    ? 'small'
+    : undefined as SizeType
+  const isFully = width > Brackpoints.SM
+
   const columns = editable
-    ? getColumnWithActionsSettings()
-    : getColumnSettings()
+    ? getColumnWithActionsSettings({ isFully })
+    : getColumnSettings({ isFully: true })
 
   return (
     <Table
+      size={size}
       columns={columns}
       dataSource={books}
       rowKey="id"
