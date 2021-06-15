@@ -111,10 +111,10 @@ namespace library
       {
         spa.Options.SourcePath = Path.Join(env.ContentRootPath, "ClientApp");
 
-        if (env.IsDevelopment())
-        {
-          spa.UseReactDevelopmentServer(npmScript: "start");
-        }
+        // if (env.IsDevelopment())
+        // {
+        //   spa.UseReactDevelopmentServer(npmScript: "start");
+        // }
       });
     }
   }

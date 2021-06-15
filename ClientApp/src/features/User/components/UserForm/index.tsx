@@ -34,7 +34,7 @@ const UserForm: React.FunctionComponent<IUserFormProps> = ({
         name="password"
         rules={[{ required: true, message: 'Пожалуйста введите пароль!' }]}
       >
-        <Input />
+        <Input type="password" />
       </Form.Item>
       <Form.Item className={classes.UserForm__buttons} >
         <Button type="primary" htmlType="submit" loading={submitting} >

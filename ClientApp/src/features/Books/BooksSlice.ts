@@ -12,6 +12,9 @@ import BooksService, {
   BookDto,
   BookCreateDto,
 } from './BooksService'
+import { 
+  logout,
+} from 'features/User/UserSlice'
 
 const thunks = {
   fetchBook: createAsyncThunk('books/fetchBook', (id: number) => {
@@ -19,6 +22,9 @@ const thunks = {
   }),
   fetchBooks: createAsyncThunk('books/fetchBooks', () => {
     return BooksService.getBooks()
+  }),
+  fetchUserBooks: createAsyncThunk('books/fetchUserBooks', () => {
+    return BooksService.getUserBooks()
   }),
   createBook: createAsyncThunk('books/createBook', (book: BookCreateDto) => {
     return BooksService.createBook(book)
@@ -34,6 +40,7 @@ const thunks = {
 export const {
   fetchBook,
   fetchBooks,
+  fetchUserBooks,
   createBook,
   updateBook,
   deleteBook,
@@ -43,12 +50,14 @@ const booksAdapter = createEntityAdapter<BookDto>()
 
 interface State {
   books: ReturnType<typeof booksAdapter.getInitialState>
+  userBooks: ReturnType<typeof booksAdapter.getInitialState>
   loading: SliceLoading
   error: SliceError
 }
 
 const initialState: State = {
   books: booksAdapter.getInitialState(),
+  userBooks: booksAdapter.getInitialState(),
   loading: {},
   error: {},
 }
@@ -64,17 +73,29 @@ const booksSlice = createSlice({
     handleThunk(builder, fetchBooks, (state, books) => {
       booksAdapter.setAll(state.books, books)
     })
+    handleThunk(builder, fetchUserBooks, (state, books) => {
+      booksAdapter.setAll(state.userBooks, books)
+    })
     handleThunk(builder, createBook, (state, book) => {
-      booksAdapter.addOne(state.books, book)
+      // booksAdapter.addOne(state.books, book)
+      booksAdapter.addOne(state.userBooks, book)
     })
     handleThunk(builder, updateBook, (state, { id, ...changes }) => {
-      booksAdapter.updateOne(state.books, {
+      // booksAdapter.updateOne(state.books, {
+      //   id,
+      //   changes,
+      // })
+      booksAdapter.updateOne(state.userBooks, {
         id,
         changes,
       })
     })
     handleThunk(builder, deleteBook, (state, { id }) => {
-      booksAdapter.removeOne(state.books, id)
+      // booksAdapter.removeOne(state.books, id)
+      booksAdapter.removeOne(state.userBooks, id)
+    })
+    builder.addCase(logout, (state, action) => {
+      state.userBooks = booksAdapter.getInitialState()
     })
   },
 })
@@ -86,10 +107,14 @@ export const selectError = (state: RootState) => getSliceState(state).error
 
 export const {
   selectAll: selectBooks,
-  selectById,
 } = booksAdapter.getSelectors((state: RootState) => getSliceState(state).books)
 
-export const selectBookById = (id: number) => (state: RootState) => selectById(state, id)
+export const {
+  selectAll: selectUserBooks,
+  selectById,
+} = booksAdapter.getSelectors((state: RootState) => getSliceState(state).userBooks)
+
+export const selectUserBookById = (id: number) => (state: RootState) => selectById(state, id)
 
 type ThunkNamesUnion = keyof typeof thunks
 type SliceLoading = SliceLoadingBase<ThunkNamesUnion>

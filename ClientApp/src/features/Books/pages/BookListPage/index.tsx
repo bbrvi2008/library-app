@@ -6,10 +6,10 @@ import { Button } from 'antd';
 
 import PageLayout from 'components/PageLayout';
 import {
-  fetchBooks,
+  fetchUserBooks,
   
   selectLoading,
-  selectBooks,
+  selectUserBooks,
 } from '../../BooksSlice';
 import BookList from '../../components/BookList';
 
@@ -18,11 +18,11 @@ const BookListPage: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const loading = useSelector(selectLoading)
-  const books = useSelector(selectBooks)
+  const books = useSelector(selectUserBooks)
 
   useEffect(() => {
-    if (!books?.length) {
-      dispatch(fetchBooks())
+    if (!books.length) {
+      dispatch(fetchUserBooks())
     }
   }, [])
 
@@ -39,7 +39,7 @@ const BookListPage: React.FC = () => {
     >
       <BookList
         books={books} 
-        loading={loading.fetchBooks}
+        loading={loading.fetchUserBooks}
         editable
       />
     </PageLayout>

@@ -73,7 +73,8 @@ namespace library.Controllers
       {
         var claims = new List<Claim>
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, userdb.Username)
+          new Claim(ClaimTypes.NameIdentifier, userdb.Id.ToString()),
+          new Claim(ClaimsIdentity.DefaultNameClaimType, userdb.Username)
         };
         ClaimsIdentity claimsIdentity = new ClaimsIdentity(
           claims, 

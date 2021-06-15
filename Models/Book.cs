@@ -7,5 +7,7 @@ namespace library.Models
         public int Year { get; set; }
         public string Genre { get; set; }
         public string Author { get; set; }
+        public int? OwnerId { get; set; }
+        public User Owner { get; set; }
     }
 }

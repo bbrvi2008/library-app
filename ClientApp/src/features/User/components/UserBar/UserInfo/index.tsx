@@ -23,7 +23,7 @@ const UserInfo: React.FunctionComponent<IUserInfoProps> = ({
   const menu = (
     <Menu className={classes.userInfo__menu} >
       <Menu.Item key="books" >
-        <Link to="/admin/books" className={classes.userInfo__menuItem} >Книги</Link>
+        <Link to="/admin/books" className={classes.userInfo__menuItem} >Мои книги</Link>
       </Menu.Item>
       <Menu.Item key="logout" onClick={onLogoutClick} >
         <span className={classes.userInfo__menuItem} >

@@ -18,9 +18,9 @@ const PublicBookListPage: React.FC = () => {
   const books = useSelector(selectBooks)
 
   useEffect(() => {
-    if (!books?.length) {
-      dispatch(fetchBooks())
-    }
+    // if (!books.length) {
+    dispatch(fetchBooks())
+    // }
   }, [])
 
   return (

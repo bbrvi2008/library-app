@@ -9,6 +9,10 @@ class BooksService {
     return Http.get<BookDto[]>(`${Urls.Root}`)
   }
 
+  public static getUserBooks() {
+    return Http.get<BookDto[]>(`${Urls.Root}/user`)
+  }
+
   public static getBookById(id: number) {
     return Http.get<BookDto>(`${Urls.Root}/${id}`)
   }
@@ -34,6 +38,7 @@ export type BookDto = {
   year: number
   genre: string
   author: string
+  ownerId?: number
 }
 
 export type BookCreateDto = {

@@ -9,7 +9,7 @@ import {
   updateBook,
   
   selectLoading,
-  selectBookById,
+  selectUserBookById,
 } from '../../BooksSlice';
 import BookForm from 'features/Books/components/BookForm';
 import { BookCreateDto } from 'features/Books/BooksService';
@@ -25,7 +25,7 @@ const BookListPage: React.FC = () => {
   const bookId = parseInt(id, 10)
 
   const loading = useSelector(selectLoading)
-  const book = useSelector(selectBookById(bookId))
+  const book = useSelector(selectUserBookById(bookId))
 
   useEffect(() => {
     if (!book) {
@@ -33,10 +33,14 @@ const BookListPage: React.FC = () => {
     }
   }, [])
 
-  const handleSubmit = (book: BookCreateDto) => {
+  const handleSubmit = (bookData: BookCreateDto) => {
+    if (!book) {
+      return
+    }
+
     dispatch(updateBook({
-      id: bookId,
       ...book,
+      ...bookData,
     }))
       .then(() => {
         history.goBack()
@@ -55,7 +59,7 @@ const BookListPage: React.FC = () => {
         initialValues={book}
         onCancel={handleCancel}
         onSubmit={handleSubmit}
-        submitting={loading.createBook}
+        submitting={loading.updateBook}
         loading={loading.fetchBook}
       />
     </PageLayout>
