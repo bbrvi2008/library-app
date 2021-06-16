@@ -1,15 +1,14 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using library.Infrastructure;
 using library.Services.Users.Dto;
 using library.Services.Users.Models;
 using library.Services.Errors.Entities;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace library.Services.Users
 {
@@ -29,6 +28,8 @@ namespace library.Services.Users
         throw new BadRequestException("Пользователь уже существует");
       }
 
+      userData.Password = BCrypt.Net.BCrypt.HashPassword(userData.Password);
+
       await _db.Users.AddAsync(userData);
       await _db.SaveChangesAsync();
 
@@ -37,9 +38,10 @@ namespace library.Services.Users
 
     public async Task<UserLoginedDto> Login(UserLoginDto userData)
     {
-      var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == userData.Username && u.Password == userData.Password);
-      if(user == null) {
-        throw new BadRequestException("Неправильное имя пользователя или пароль");
+      var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == userData.Username);
+      var passwordVerified = BCrypt.Net.BCrypt.Verify(userData.Password, user.Password);
+      if(user == null || !passwordVerified) {
+        throw new BadRequestException("Введено неправильное имя пользователя или пароль");
       }
 
       var identity = GetIdentity(user);
