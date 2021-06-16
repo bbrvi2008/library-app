@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using library.Models;
+using library.Services.Books.Models;
+using library.Services.Users.Models;
 
 namespace library.Infrastructure
 {

@@ -1,13 +1,11 @@
-using System.Security.Claims;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using library.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using library.Infrastructure;
+using library.Services.Books.Models;
+using library.Services.Books;
+using library.Services.Users;
+using System.Threading.Tasks;
 
 namespace library.Controllers
 {
@@ -15,99 +13,53 @@ namespace library.Controllers
   [ApiController]
   public class BooksController : ControllerBase
   {
-    private ApplicationContext _db;
+    private BooksService _booksService;
+    private UserManager _userManager { get; set; }
 
     public BooksController(ApplicationContext context)
     {
-        _db = context;
+      _booksService = new BooksService(context);
+      _userManager = new UserManager();
     }
 
     [HttpGet("")]
-    public ActionResult<IEnumerable<Book>> GetBooks()
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
     {
-      return _db.Books.ToList();
+      return Ok(await _booksService.GetBooks());
     }
 
     [Authorize]
     [HttpGet("user")]
-    public ActionResult<IEnumerable<Book>> GetUserBooks()
+    public async Task<ActionResult<IEnumerable<Book>>> GetUserBooks()
     {
-      return _db.Books.Where(book => book.OwnerId == GetUserId() && book.OwnerId != null).ToList();
+      return Ok(await _booksService.GetUserBooks(_userManager.GetUserId(User)));
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Book> GetBookById(int id)
+    public async Task<ActionResult<Book>> GetBookById(int id)
     {
-      var book = _db.Books.FirstOrDefault<Book>(book => book.Id == id);
-
-      if(book == null) {
-        return NotFound();
-      }
-
-      return new ObjectResult(book);
+      return Ok(await _booksService.GetBookById(id));
     }
 
     [Authorize]
     [HttpPost("")]
-    public ActionResult<Book> PostBook(Book model)
+    public async Task<ActionResult<Book>> PostBook(Book bookData)
     {
-      model.OwnerId = GetUserId();
-
-      _db.Books.Add(model);
-      _db.SaveChanges();
-
-      return Ok(model);
+      return Ok(await _booksService.CreateBook(bookData, _userManager.GetUserId(User)));
     }
 
     [Authorize]
     [HttpPut("{id}")]
-    public IActionResult PutBook(int id, Book model)
+    public async Task<IActionResult> PutBook(int id, Book bookData)
     {
-      var book = _db.Books.AsNoTracking().FirstOrDefault<Book>(book => book.Id == model.Id);
-
-      if(book == null) {
-        return NotFound();
-      }
-
-      if(book.OwnerId != GetUserId()) {
-        return Forbid();
-      }
-
-      _db.Books.Update(model);
-      _db.SaveChanges();
-
-      return Ok(model);
+      return Ok(await _booksService.UpdateBook(bookData, _userManager.GetUserId(User)));
     }
 
     [Authorize]
     [HttpDelete("{id}")]
-    public ActionResult<Book> DeleteBookById(int id)
+    public async Task<ActionResult<Book>> DeleteBookById(int id)
     {
-      var book = _db.Books.FirstOrDefault<Book>(book => book.Id == id);
-
-      if(book == null) {
-        return NotFound();
-      }
-
-      if(book.OwnerId != GetUserId()) {
-        return Forbid();
-      }
-
-      _db.Books.Remove(book);
-      _db.SaveChanges();
-
-      return Ok(book);
-    }
-
-    private int? GetUserId() {
-      var UserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-      if(!string.IsNullOrEmpty(UserIdClaim)) 
-      {
-        return Convert.ToInt32(UserIdClaim);
-      }
-
-      return null;
+      return Ok(await _booksService.DeleteBookById(id, _userManager.GetUserId(User)));
     }
   }
 }
